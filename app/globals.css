@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Giftly — "Midnight & Camel" design tokens
+   Source of truth: uploads/DESIGN.md
+   ============================================================ */
+:root {
+  --bg-page: #f4efe3;
+  --bg-surface: #fbf8f1;
+  --bg-section: #e9e2d0;
+  --bg-muted: #e5dcc3;
+
+  --text-primary: #1b2436;
+  --text-secondary: #6b6453;
+  --text-muted: #8e8568;
+  --text-inverse: #f4efe3;
+
+  --primary: #1f2d44;
+  --primary-hover: #28395a;
+  --primary-active: #16223a;
+  --primary-fg: #f4efe3;
+
+  --accent: #b58a4a;
+  --accent-hover: #a47b3c;
+  --accent-active: #93702f;
+  --accent-fg: #221a0e;
+
+  --border-subtle: #e2d9c2;
+  --border: #d8cdb4;
+  --border-strong: #c9bc9e;
+  --ring: 31 45 68; /* use: 0 0 0 3px rgb(var(--ring) / .35) */
+
+  --success: #3e6b4f;
+  --success-bg: #e5ece0;
+  --success-fg: #2c4f3a;
+  --warning: #b5862a;
+  --warning-bg: #f1e7cb;
+  --warning-fg: #6e4e12;
+  --danger: #a23b2e;
+  --danger-bg: #f2dfd9;
+  --danger-fg: #7a2a20;
+  --info: #2f4a6b;
+  --info-bg: #e1e7ef;
+  --info-fg: #21364f;
+
+  --radius-sm: 6px;
+  --radius: 9px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* shadcn-style aliases (RGB triplets) */
+  --background: 244 239 227;
+  --foreground: 27 36 54;
+}
+
+@layer base {
+  body {
+    @apply bg-sand text-ink antialiased;
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+
+  /* Headlines are always Fraunces; UI labels & running text stay Inter. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display), Georgia, serif;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: #b58a4a;
+    color: #221a0e;
+  }
+
+  /* Prices and figures line up in columns. */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Calm motion: respect reduced-motion preferences everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
