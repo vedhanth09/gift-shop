@@ -53,39 +53,50 @@ export default function ProductFilters({
   }
 
   const inputClass =
-    "w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm placeholder:text-taupe-muted focus:border-midnight focus:outline-none focus:ring-1 focus:ring-midnight";
+    "w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink placeholder:text-taupe-muted focus:border-midnight focus:outline-none focus:ring-1 focus:ring-midnight";
+
+  // Native <select> falls back to the OS control without this: strip the
+  // default appearance, leave room for our own chevron, and keep the height
+  // identical to the text inputs so the row lines up.
+  const selectClass = `${inputClass} cursor-pointer appearance-none pr-9`;
 
   return (
     <div className="flex flex-wrap items-end gap-3">
       {showCategory && (
         <label className="flex flex-col gap-1 text-xs font-medium text-taupe">
           Category
-          <select
-            value={params.get("category") ?? ""}
-            onChange={(e) => setParam("category", e.target.value)}
-            className={inputClass}
-          >
-            <option value="">All categories</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              value={params.get("category") ?? ""}
+              onChange={(e) => setParam("category", e.target.value)}
+              className={selectClass}
+            >
+              <option value="">All categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <Chevron />
+          </div>
         </label>
       )}
 
       <label className="flex flex-col gap-1 text-xs font-medium text-taupe">
         Sort by
-        <select
-          value={params.get("sort") ?? "newest"}
-          onChange={(e) => setParam("sort", e.target.value === "newest" ? "" : e.target.value)}
-          className={inputClass}
-        >
-          <option value="newest">Newest</option>
-          <option value="price-asc">Price: low to high</option>
-          <option value="price-desc">Price: high to low</option>
-        </select>
+        <div className="relative">
+          <select
+            value={params.get("sort") ?? "newest"}
+            onChange={(e) => setParam("sort", e.target.value === "newest" ? "" : e.target.value)}
+            className={selectClass}
+          >
+            <option value="newest">Newest</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+          </select>
+          <Chevron />
+        </div>
       </label>
 
       <form onSubmit={applyPrice} className="flex items-end gap-2">
@@ -117,5 +128,23 @@ export default function ProductFilters({
         </button>
       </form>
     </div>
+  );
+}
+
+/** Custom dropdown caret — replaces the OS arrow hidden by `appearance-none`. */
+function Chevron() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-taupe"
+    >
+      <path d="M6 8l4 4 4-4" />
+    </svg>
   );
 }

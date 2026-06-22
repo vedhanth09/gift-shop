@@ -4,7 +4,6 @@ import Category from "@/models/Category";
 import Product from "@/models/Product";
 import { queryPublishedProducts } from "@/lib/products";
 import ProductCard from "@/components/store/ProductCard";
-import NewsletterSignup from "@/components/store/NewsletterSignup";
 
 export const dynamic = "force-dynamic";
 
@@ -28,85 +27,109 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Warm decorative panel standing in for editorial photography. */
-function ImagePanel({
-  ratio,
-  className = "",
-  tone = "sand",
+/* ── Dashboard block grid ─────────────────────────────────────────────────
+ * The "blocks of dashboard" centrepiece (tinyminymo-style bento): one large
+ * hero block plus four quick-entry tiles, each a coloured panel linking into a
+ * curated slice of the catalogue. Every tone is drawn from the Midnight & Camel
+ * tokens so it sits inside the existing design system. */
+
+type Tone = "midnight" | "camel" | "sand" | "surface";
+
+const TILE_TONES: Record<
+  Tone,
+  { panel: string; eyebrow: string; sub: string; arrow: string }
+> = {
+  midnight: {
+    panel:
+      "bg-midnight text-sand border-[#2A3954] hover:bg-midnight-hover",
+    eyebrow: "text-[#D6A95C]",
+    sub: "text-sand/75",
+    arrow: "text-sand",
+  },
+  camel: {
+    panel:
+      "bg-camel text-camel-fg border-camel-active hover:bg-camel-hover",
+    eyebrow: "text-camel-fg/70",
+    sub: "text-camel-fg/80",
+    arrow: "text-camel-fg",
+  },
+  sand: {
+    panel:
+      "bg-sand-deep text-ink border-line hover:border-line-strong hover:shadow-sm",
+    eyebrow: "text-camel",
+    sub: "text-taupe",
+    arrow: "text-midnight",
+  },
+  surface: {
+    panel:
+      "bg-surface text-ink border-line-subtle hover:border-line hover:shadow-sm",
+    eyebrow: "text-camel",
+    sub: "text-taupe",
+    arrow: "text-midnight",
+  },
+};
+
+function DashTile({
+  href,
+  eyebrow,
+  title,
+  sub,
+  tone,
 }: {
-  ratio: string;
-  className?: string;
-  tone?: "sand" | "midnight";
+  href: string;
+  eyebrow: string;
+  title: string;
+  sub: string;
+  tone: Tone;
 }) {
-  const pattern =
-    tone === "midnight"
-      ? "repeating-linear-gradient(135deg,#28395A,#28395A 12px,#243352 12px,#243352 24px)"
-      : "repeating-linear-gradient(135deg,#E5DCC3,#E5DCC3 12px,#E1D7BC 12px,#E1D7BC 24px)";
+  const t = TILE_TONES[tone];
   return (
-    <div
-      className={`relative overflow-hidden rounded-lg ${
-        tone === "midnight" ? "border border-[#2A3954]" : "border border-line"
-      } ${className}`}
-      style={{ aspectRatio: ratio }}
-      aria-hidden
+    <Link
+      href={href}
+      className={`group relative flex min-h-[164px] flex-col justify-between overflow-hidden rounded-lg border p-5 transition duration-200 ${t.panel}`}
     >
-      <div className="absolute inset-0" style={{ background: pattern }} />
-      <span
-        className={`absolute inset-0 flex items-center justify-center font-display text-[120px] font-semibold ${
-          tone === "midnight" ? "text-sand/10" : "text-midnight/[0.06]"
-        }`}
+      <p
+        className={`text-[11px] font-medium uppercase tracking-[0.12em] ${t.eyebrow}`}
       >
-        G
-      </span>
-    </div>
+        {eyebrow}
+      </p>
+      <div>
+        <div className="font-display text-xl font-semibold leading-tight">
+          {title}
+        </div>
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <span className={`text-sm ${t.sub}`}>{sub}</span>
+          <span
+            className={`text-base transition-transform duration-200 group-hover:translate-x-0.5 ${t.arrow}`}
+            aria-hidden
+          >
+            →
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }
 
-const VALUE_PROPS = [
-  {
-    title: "Hand-wrapped, always",
-    body: "Every order is packed by hand in our studio — ribbon, note card and all.",
-    icon: (
-      <>
-        <path d="M3 8l9-5 9 5v8l-9 5-9-5z" />
-        <path d="M3 8l9 5 9-5" />
-        <path d="M12 13v8" />
-      </>
-    ),
-  },
-  {
-    title: "Pan-India delivery",
-    body: "Tracked shipping to 19,000+ pincodes, with gift dating on request.",
-    icon: (
-      <>
-        <path d="M3 7h13l5 5v4h-3" />
-        <path d="M3 7v9h2" />
-        <circle cx="7.5" cy="17.5" r="2" />
-        <circle cx="17.5" cy="17.5" r="2" />
-        <path d="M9.5 17.5h6" />
-      </>
-    ),
-  },
-  {
-    title: "Personalisation",
-    body: "Names, dates and short notes engraved or foiled — usually within 48 hours.",
-    icon: (
-      <path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 16.8 6.6 18.2l.9-5.5-4-3.9 5.5-.8z" />
-    ),
-  },
+/** Rotating benefits shown in the slim announcement strip above the hero. */
+const ANNOUNCEMENTS = [
+  "Free shipping on orders over ₹1,200",
+  "Hand-wrapped & gift-dated on request",
+  "Tracked delivery to 19,000+ pincodes",
 ];
 
 /**
- * Storefront homepage. Editorial hero → ribbon rule → featured products →
- * category grid → value props → gifting-guide band → newsletter, following the
- * Giftly "Midnight & Camel" design (uploads/DESIGN.md §9). Featured products are
- * the newest published items; category tiles carry a live published-product
- * count.
+ * Storefront homepage, redesigned around a tinyminymo-style dashboard of
+ * blocks while keeping the Giftly "Midnight & Camel" palette (uploads/DESIGN.md
+ * §9). Flow: announcement strip → bento block grid (hero + quick-entry tiles) →
+ * category block rail → products grid. The products grid lists every published
+ * product so the full catalogue is visible on the dashboard; category tiles
+ * carry a live published-product count.
  */
 export default async function HomePage() {
   await dbConnect();
 
-  const [{ products: featured }, categoryDocs, countRows] = await Promise.all([
+  const [newest, categoryDocs, countRows] = await Promise.all([
     queryPublishedProducts({ sort: "newest", page: 1 }),
     Category.find().sort({ name: 1 }).lean(),
     Product.aggregate<{ _id: unknown; count: number }>([
@@ -121,186 +144,218 @@ export default async function HomePage() {
     id: String(c._id),
     name: c.name,
     slug: c.slug,
+    image: c.image ?? null,
     count: countByCat.get(String(c._id)) ?? 0,
   }));
 
+  // Show every published product on the dashboard.
+  const arrivals = newest.products;
+
   return (
     <div>
-      {/* ── Editorial hero ───────────────────────────────────────────── */}
-      <section className="relative border-b border-line-subtle bg-sand-deep">
-        <div className="mx-auto max-w-[860px] px-6 py-16 text-center sm:py-24 lg:py-28">
-          <Eyebrow>The art of giving well</Eyebrow>
-          <h1 className="mx-auto mt-5 font-display text-[clamp(40px,7vw,68px)] font-semibold leading-[1.02] tracking-[-0.025em] text-ink">
-            Every gift, a quiet <span className="italic text-camel">gesture</span>.
-          </h1>
-          <p className="mx-auto mt-5 max-w-[520px] text-lg leading-relaxed text-taupe">
-            From birthday boxes to corporate hampers — thoughtfully sourced,
-            beautifully wrapped, delivered across India.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
+      {/* ── Announcement strip ───────────────────────────────────────── */}
+      <div className="bg-midnight text-sand">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-1 px-4 py-2.5 text-center text-xs font-medium sm:px-6">
+          {ANNOUNCEMENTS.map((line, i) => (
+            <span key={line} className="inline-flex items-center gap-2">
+              {i > 0 && (
+                <span
+                  className="hidden h-1.5 w-1.5 rotate-45 bg-camel sm:inline-block"
+                  aria-hidden
+                />
+              )}
+              <span className={i > 0 ? "hidden sm:inline" : ""}>{line}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Dashboard block grid (hero + quick-entry tiles) ──────────── */}
+      <section className="border-b border-line-subtle bg-sand-deep">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:grid-rows-2">
+            {/* Large hero block */}
+            <div className="relative col-span-2 flex min-h-[300px] flex-col justify-center overflow-hidden rounded-lg border border-line bg-surface p-7 sm:min-h-[340px] sm:p-9 lg:row-span-2">
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "repeating-linear-gradient(135deg,#F4EFE3,#F4EFE3 14px,#EDE6D5 14px,#EDE6D5 28px)",
+                }}
+                aria-hidden
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(120deg,rgba(251,248,241,0.92),rgba(251,248,241,0.55) 60%,rgba(251,248,241,0.2))",
+                }}
+                aria-hidden
+              />
+              <div className="relative">
+                <Eyebrow>The art of giving well</Eyebrow>
+                <h1 className="mt-4 max-w-[440px] font-display text-[clamp(34px,5vw,52px)] font-semibold leading-[1.04] tracking-[-0.025em] text-ink">
+                  Every gift, a quiet{" "}
+                  <span className="italic text-camel">gesture</span>.
+                </h1>
+                <p className="mt-4 max-w-[400px] text-base leading-relaxed text-taupe">
+                  From birthday boxes to corporate hampers — thoughtfully
+                  sourced, beautifully wrapped, delivered across India.
+                </p>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <Link
+                    href="/products"
+                    className="inline-flex h-[50px] items-center rounded bg-midnight px-7 text-[15px] font-medium text-sand transition hover:bg-midnight-hover active:scale-[0.99]"
+                  >
+                    Shop the collection
+                  </Link>
+                  <Link
+                    href="/search"
+                    className="inline-flex h-[50px] items-center rounded border-[1.5px] border-midnight px-7 text-[15px] font-medium text-midnight transition hover:bg-midnight/[0.06]"
+                  >
+                    Search
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick-entry dashboard tiles */}
+            <DashTile
+              href="/products?sort=newest"
+              eyebrow="Just in"
+              title="New arrivals"
+              sub="Fresh this week"
+              tone="midnight"
+            />
+            <DashTile
+              href="/products?sort=price-asc"
+              eyebrow="Easy picks"
+              title="Great value"
+              sub="Lovely under budget"
+              tone="camel"
+            />
+            <DashTile
+              href={categories[0] ? `/categories/${categories[0].slug}` : "/products"}
+              eyebrow="By occasion"
+              title="Shop categories"
+              sub={`${categories.length || "All"} collections`}
+              tone="sand"
+            />
+            <DashTile
               href="/products"
-              className="inline-flex h-[52px] items-center gap-2 rounded bg-midnight px-7 text-[15px] font-medium text-sand transition hover:bg-midnight-hover active:scale-[0.99]"
-            >
-              Shop the collection
-            </Link>
-            <Link
-              href="/search"
-              className="inline-flex h-[52px] items-center rounded border-[1.5px] border-midnight px-7 text-[15px] font-medium text-midnight transition hover:bg-midnight/[0.06]"
-            >
-              Search
-            </Link>
+              eyebrow="Made to order"
+              title="Personalised"
+              sub="Names, dates & notes"
+              tone="surface"
+            />
           </div>
-          <ImagePanel ratio="16 / 9" className="mt-11" />
         </div>
       </section>
 
-      {/* ── Featured products ────────────────────────────────────────── */}
+      {/* ── Category block rail ──────────────────────────────────────── */}
+      {categories.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 pt-12 sm:px-6 sm:pt-16">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <Eyebrow>Find the occasion</Eyebrow>
+              <h2 className="mt-2.5 font-display text-[clamp(24px,3.4vw,30px)] font-semibold leading-tight text-ink">
+                Shop by category
+              </h2>
+            </div>
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-midnight transition hover:text-camel"
+            >
+              View all <span className="text-base">→</span>
+            </Link>
+          </div>
+
+          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {categories.map((c) => (
+              <Link
+                key={c.id}
+                href={`/categories/${c.slug}`}
+                className="group relative aspect-[4/5] w-[160px] flex-none snap-start overflow-hidden rounded-lg border border-line transition hover:border-line-strong sm:w-[190px]"
+              >
+                {c.image ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={c.image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <>
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "repeating-linear-gradient(135deg,#E5DCC3,#E5DCC3 11px,#DED3B7 11px,#DED3B7 22px)",
+                      }}
+                      aria-hidden
+                    />
+                    <span
+                      className="absolute inset-0 flex items-center justify-center font-display text-[88px] font-semibold text-midnight/[0.07]"
+                      aria-hidden
+                    >
+                      {c.name.charAt(0)}
+                    </span>
+                  </>
+                )}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to top,rgba(27,36,54,0.52),rgba(27,36,54,0) 55%)",
+                  }}
+                  aria-hidden
+                />
+                <div className="absolute inset-x-4 bottom-3.5">
+                  <div className="font-display text-lg font-semibold leading-tight text-sand">
+                    {c.name}
+                  </div>
+                  <div className="mt-0.5 text-xs text-sand/80">
+                    {c.count} {c.count === 1 ? "gift" : "gifts"}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── New arrivals ─────────────────────────────────────────────── */}
       <section className="mx-auto max-w-6xl px-4 pt-12 sm:px-6 sm:pt-16">
-        <RibbonRule className="mb-12 sm:mb-16" />
+        <RibbonRule className="mb-12 sm:mb-14" />
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
           <div>
             <Eyebrow>This week</Eyebrow>
-            <h2 className="mt-2.5 font-display text-[clamp(26px,3.4vw,32px)] font-semibold leading-tight text-ink">
-              Featured gifts
+            <h2 className="mt-2.5 font-display text-[clamp(24px,3.4vw,30px)] font-semibold leading-tight text-ink">
+              New arrivals
             </h2>
           </div>
           <Link
-            href="/products"
+            href="/products?sort=newest"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-midnight transition hover:text-camel"
           >
             View all <span className="text-base">→</span>
           </Link>
         </div>
 
-        {featured.length === 0 ? (
+        {arrivals.length === 0 ? (
           <div className="rounded-lg border border-dashed border-line bg-surface p-12 text-center text-taupe">
             No products yet — check back soon.
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5">
-            {featured.slice(0, 4).map((p) => (
+            {arrivals.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
         )}
       </section>
 
-      {/* ── Category grid ────────────────────────────────────────────── */}
-      {categories.length > 0 && (
-        <section className="mt-12 border-y border-line-subtle bg-sand-deep sm:mt-16">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-            <div className="mb-9 text-center">
-              <Eyebrow>Find the occasion</Eyebrow>
-              <h2 className="mt-2.5 font-display text-[clamp(26px,3.4vw,32px)] font-semibold leading-tight text-ink">
-                Shop by category
-              </h2>
-            </div>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {categories.map((c) => (
-                <Link
-                  key={c.id}
-                  href={`/categories/${c.slug}`}
-                  className="group relative aspect-[4/5] overflow-hidden rounded-lg border border-line transition hover:border-line-strong"
-                >
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "repeating-linear-gradient(135deg,#E5DCC3,#E5DCC3 11px,#DED3B7 11px,#DED3B7 22px)",
-                    }}
-                    aria-hidden
-                  />
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(to top,rgba(27,36,54,0.5),rgba(27,36,54,0) 55%)",
-                    }}
-                    aria-hidden
-                  />
-                  <div className="absolute inset-x-4 bottom-3.5">
-                    <div className="font-display text-xl font-semibold leading-tight text-sand">
-                      {c.name}
-                    </div>
-                    <div className="mt-0.5 text-xs text-sand/80">
-                      {c.count} {c.count === 1 ? "gift" : "gifts"}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── Value props ──────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-        <div className="grid gap-8 sm:grid-cols-3">
-          {VALUE_PROPS.map((v) => (
-            <div key={v.title} className="flex items-start gap-4">
-              <div className="flex h-11 w-11 flex-none items-center justify-center rounded border border-line-subtle bg-sand-deep text-midnight">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden
-                >
-                  {v.icon}
-                </svg>
-              </div>
-              <div>
-                <div className="font-medium text-ink">{v.title}</div>
-                <p className="mt-1 text-sm leading-relaxed text-taupe">{v.body}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Gifting guide band ───────────────────────────────────────── */}
-      <section className="bg-midnight text-sand">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-14">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.12em] text-[#D6A95C]">
-              The gifting guide
-            </p>
-            <h2 className="mt-4 font-display text-[clamp(28px,3.8vw,38px)] font-semibold leading-[1.1] tracking-[-0.015em] text-sand">
-              Not sure what to send? Start with the feeling.
-            </h2>
-            <p className="mt-4 max-w-[460px] text-[17px] leading-relaxed text-sand/80">
-              Our short guide pairs occasions with gifts that land — by
-              relationship, budget and how much time you have.
-            </p>
-            <Link
-              href="/products"
-              className="mt-7 inline-flex h-12 items-center rounded bg-camel px-6 text-sm font-medium text-camel-fg transition hover:bg-camel-hover active:scale-[0.99]"
-            >
-              Read the guide
-            </Link>
-          </div>
-          <ImagePanel ratio="3 / 2" tone="midnight" />
-        </div>
-      </section>
-
-      {/* ── Newsletter ───────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-[560px] text-center">
-          <RibbonRule className="mb-6" />
-          <h2 className="font-display text-[clamp(24px,3vw,30px)] font-semibold text-ink">
-            Join the list
-          </h2>
-          <p className="mb-6 mt-2.5 text-base text-taupe">
-            Seasonal edits and early access to new collections. No noise.
-          </p>
-          <NewsletterSignup />
-        </div>
-      </section>
+      <div className="h-14 sm:h-20" />
     </div>
   );
 }

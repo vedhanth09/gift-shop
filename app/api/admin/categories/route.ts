@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
   if (auth instanceof NextResponse) return auth;
 
-  let body: { name?: unknown };
+  let body: { name?: unknown; image?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -31,10 +31,12 @@ export async function POST(req: NextRequest) {
   const name = typeof body.name === "string" ? body.name.trim() : "";
   if (!name) return apiError("Category name is required.", 400);
 
+  const image = typeof body.image === "string" ? body.image.trim() : "";
+
   await dbConnect();
 
   const slug = await generateUniqueSlug(Category, name);
-  const category = await Category.create({ name, slug });
+  const category = await Category.create({ name, slug, image: image || undefined });
 
   return NextResponse.json({ category }, { status: 201 });
 }

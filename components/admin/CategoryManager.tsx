@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ImageUploader from "./ImageUploader";
 
 export interface CategoryRow {
   id: string;
   name: string;
   slug: string;
+  image?: string | null;
 }
 
 export default function CategoryManager({
@@ -16,8 +18,10 @@ export default function CategoryManager({
 }) {
   const router = useRouter();
   const [newName, setNewName] = useState("");
+  const [newImage, setNewImage] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
+  const [editImage, setEditImage] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,7 +34,7 @@ export default function CategoryManager({
       const res = await fetch("/api/admin/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newName.trim() }),
+        body: JSON.stringify({ name: newName.trim(), image: newImage[0] ?? "" }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -38,6 +42,7 @@ export default function CategoryManager({
         return;
       }
       setNewName("");
+      setNewImage([]);
       router.refresh();
     } finally {
       setBusy(false);
@@ -52,7 +57,7 @@ export default function CategoryManager({
       const res = await fetch(`/api/admin/categories/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: editName.trim() }),
+        body: JSON.stringify({ name: editName.trim(), image: editImage[0] ?? "" }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -89,20 +94,27 @@ export default function CategoryManager({
     <div className="max-w-xl space-y-5">
       <form
         onSubmit={create}
-        className="flex gap-2 rounded-xl border border-line-subtle bg-surface p-4"
+        className="space-y-3 rounded-xl border border-line-subtle bg-surface p-4"
       >
         <input
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="New category name"
-          className="flex-1 rounded-lg border border-line bg-surface px-3 py-2 text-sm placeholder:text-taupe-muted focus:border-midnight focus:outline-none focus:ring-1 focus:ring-midnight"
+          className="w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm placeholder:text-taupe-muted focus:border-midnight focus:outline-none focus:ring-1 focus:ring-midnight"
         />
+        <div>
+          <span className="mb-1.5 block text-xs font-medium text-taupe">
+            Category image{" "}
+            <span className="font-normal text-taupe-muted">optional</span>
+          </span>
+          <ImageUploader value={newImage} onChange={setNewImage} max={1} />
+        </div>
         <button
           type="submit"
           disabled={busy || !newName.trim()}
           className="rounded-lg bg-midnight px-4 py-2 text-sm font-semibold text-sand transition hover:bg-midnight-hover disabled:opacity-60"
         >
-          Add
+          Add category
         </button>
       </form>
 
@@ -120,18 +132,26 @@ export default function CategoryManager({
         ) : (
           <ul className="divide-y divide-line-subtle">
             {categories.map((cat) => (
-              <li
-                key={cat.id}
-                className="flex items-center justify-between gap-3 px-4 py-3"
-              >
+              <li key={cat.id} className="px-4 py-3">
                 {editingId === cat.id ? (
-                  <>
+                  <div className="space-y-3">
                     <input
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="flex-1 rounded-lg border border-line bg-surface px-3 py-1.5 text-sm placeholder:text-taupe-muted focus:border-midnight focus:outline-none focus:ring-1 focus:ring-midnight"
+                      className="w-full rounded-lg border border-line bg-surface px-3 py-1.5 text-sm placeholder:text-taupe-muted focus:border-midnight focus:outline-none focus:ring-1 focus:ring-midnight"
                       autoFocus
                     />
+                    <div>
+                      <span className="mb-1.5 block text-xs font-medium text-taupe">
+                        Category image{" "}
+                        <span className="font-normal text-taupe-muted">optional</span>
+                      </span>
+                      <ImageUploader
+                        value={editImage}
+                        onChange={setEditImage}
+                        max={1}
+                      />
+                    </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => saveEdit(cat.id)}
@@ -147,23 +167,38 @@ export default function CategoryManager({
                         Cancel
                       </button>
                     </div>
-                  </>
+                  </div>
                 ) : (
-                  <>
-                    <div>
-                      <p className="font-medium text-ink">{cat.name}</p>
-                      <p className="text-xs text-taupe-muted">/{cat.slug}</p>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      {cat.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={cat.image}
+                          alt=""
+                          className="h-12 w-12 flex-none rounded-lg border border-line-subtle object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-12 w-12 flex-none items-center justify-center rounded-lg border border-line-subtle bg-sand-deep font-display text-lg font-semibold text-midnight/30">
+                          {cat.name.charAt(0)}
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-ink">{cat.name}</p>
+                        <p className="text-xs text-taupe-muted">/{cat.slug}</p>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-none gap-2">
                       <button
                         onClick={() => {
                           setEditingId(cat.id);
                           setEditName(cat.name);
+                          setEditImage(cat.image ? [cat.image] : []);
                           setError(null);
                         }}
                         className="rounded-md border border-line px-3 py-1 text-xs font-medium text-ink transition hover:bg-midnight/[0.06]"
                       >
-                        Rename
+                        Edit
                       </button>
                       <button
                         onClick={() => remove(cat)}
@@ -173,7 +208,7 @@ export default function CategoryManager({
                         Delete
                       </button>
                     </div>
-                  </>
+                  </div>
                 )}
               </li>
             ))}

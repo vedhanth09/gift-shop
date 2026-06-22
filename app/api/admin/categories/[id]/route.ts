@@ -20,7 +20,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
   if (auth instanceof NextResponse) return auth;
   if (!isValidId(params.id)) return apiError("Invalid category id.", 400);
 
-  let body: { name?: unknown };
+  let body: { name?: unknown; image?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -38,6 +38,12 @@ export async function PUT(req: NextRequest, { params }: Params) {
   existing.name = name;
   // Keep the slug in sync with the name (unique, excluding self).
   existing.slug = await generateUniqueSlug(Category, name, params.id);
+  // Only touch the image when the field is present in the payload, so a
+  // rename that omits it doesn't wipe an existing image.
+  if ("image" in body) {
+    const image = typeof body.image === "string" ? body.image.trim() : "";
+    existing.image = image || undefined;
+  }
   await existing.save();
 
   return NextResponse.json({ category: existing.toObject() });

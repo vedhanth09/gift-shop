@@ -19,6 +19,7 @@ export default async function AdminCategoriesPage() {
     id: String(c._id),
     name: c.name,
     slug: c.slug,
+    image: c.image ?? null,
   }));
 
   return (

@@ -18,6 +18,7 @@ export async function GET() {
     id: String(c._id),
     name: c.name,
     slug: c.slug,
+    image: c.image ?? null,
   }));
 
   return NextResponse.json({ categories });
