@@ -11,7 +11,7 @@ import SearchBox from "./SearchBox";
  * account and cart. The cart count and account state come from client stores,
  * so they render only after mount to avoid hydration mismatches.
  */
-export default function StoreHeader({ storeName = "Giftly" }: { storeName?: string }) {
+export default function StoreHeader({ storeName = "Giftopia" }: { storeName?: string }) {
   const totalItems = useCartStore((s) => s.totalItems());
   const user = useAuthStore((s) => s.user);
 

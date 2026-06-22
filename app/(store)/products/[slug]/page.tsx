@@ -19,10 +19,10 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const product = await getPublishedProductBySlug(params.slug);
-  if (!product) return { title: "Product not found · Giftly" };
+  if (!product) return { title: "Product not found · Giftopia" };
   return {
-    title: `${product.title} · Giftly`,
-    description: product.description.slice(0, 160) || `Buy ${product.title} at Giftly.`,
+    title: `${product.title} · Giftopia`,
+    description: product.description.slice(0, 160) || `Buy ${product.title} at Giftopia.`,
     openGraph: {
       title: product.title,
       images: product.images.length ? [product.images[0]] : undefined,

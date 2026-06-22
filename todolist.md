@@ -1,6 +1,6 @@
-# Giftly — Development Todolist
+# Giftopia — Development Todolist
 
-> Derived from Giftly PRD v1.0 | Next.js 14 · MongoDB Atlas · Tailwind · Cloudinary · Razorpay/Stripe
+> Derived from Giftopia PRD v1.0 | Next.js 14 · MongoDB Atlas · Tailwind · Cloudinary · Razorpay/Stripe
 
 Priority key: **P0** = MVP must-ship · **P1** = first 6 weeks · **P2** = post-launch
 

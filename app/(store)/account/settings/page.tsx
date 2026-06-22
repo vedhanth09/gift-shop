@@ -8,7 +8,7 @@ import AccountSettings from "@/components/store/AccountSettings";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Account settings · Giftly",
+  title: "Account settings · Giftopia",
 };
 
 export default async function AccountSettingsPage() {

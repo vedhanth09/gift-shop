@@ -100,7 +100,7 @@ export async function openRazorpayCheckout(opts: {
       key: opts.keyId,
       amount: opts.amount,
       currency: opts.currency,
-      name: "Giftly",
+      name: "Giftopia",
       description: `Order ${opts.orderNumber}`,
       order_id: opts.razorpayOrderId,
       prefill: opts.prefill,

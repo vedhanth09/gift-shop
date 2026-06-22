@@ -9,8 +9,8 @@ import Pagination from "@/components/store/Pagination";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Shop all gifts · Giftly",
-  description: "Browse the full Giftly catalogue of curated gifts.",
+  title: "Shop all gifts · Giftopia",
+  description: "Browse the full Giftopia catalogue of curated gifts.",
 };
 
 type SearchParams = {

@@ -22,10 +22,10 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const category = await findCategory(params.slug);
-  if (!category) return { title: "Category not found · Giftly" };
+  if (!category) return { title: "Category not found · Giftopia" };
   return {
-    title: `${category.name} · Giftly`,
-    description: `Shop ${category.name} gifts at Giftly.`,
+    title: `${category.name} · Giftopia`,
+    description: `Shop ${category.name} gifts at Giftopia.`,
   };
 }
 

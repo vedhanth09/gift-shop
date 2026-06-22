@@ -112,7 +112,7 @@ export default function CustomerLoginPage({
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-taupe">
-          New to Giftly?{" "}
+          New to Giftopia?{" "}
           <Link href="/account/register" className="font-medium text-midnight hover:underline">
             Create an account
           </Link>

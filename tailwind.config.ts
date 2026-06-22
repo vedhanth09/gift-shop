@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Giftly design system — "Midnight & Camel" (Warm Editorial).
+ * Giftopia design system — "Midnight & Camel" (Warm Editorial).
  * Build against these tokens, not raw hex. See uploads/DESIGN.md for the
  * single source of truth behind every value here.
  */

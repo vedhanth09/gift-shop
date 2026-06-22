@@ -1,4 +1,4 @@
-# Giftly — Performance Audit (V1.1)
+# Giftopia — Performance Audit (V1.1)
 
 Scope: a code-level performance review of the Next.js 14 storefront + admin app.
 Field metrics (Lighthouse / Core Web Vitals) must be measured against the

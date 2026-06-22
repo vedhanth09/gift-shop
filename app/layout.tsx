@@ -23,13 +23,13 @@ const BASE_URL = (
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Giftly — Thoughtfully curated gifts",
-    template: "%s · Giftly",
+    default: "Giftopia — Thoughtfully curated gifts",
+    template: "%s · Giftopia",
   },
   description:
     "Hand-picked presents for every occasion — thoughtfully curated and delivered to your door.",
   openGraph: {
-    siteName: "Giftly",
+    siteName: "Giftopia",
     type: "website",
     url: BASE_URL,
   },

@@ -45,7 +45,7 @@ export async function PUT(req: NextRequest) {
   const social = (body.social ?? {}) as Record<string, unknown>;
 
   const update = {
-    storeName: str(body.storeName) || "Giftly",
+    storeName: str(body.storeName) || "Giftopia",
     logoUrl: str(body.logoUrl),
     contactEmail,
     currency: str(body.currency) || "INR",

@@ -120,7 +120,7 @@ const ANNOUNCEMENTS = [
 
 /**
  * Storefront homepage, redesigned around a tinyminymo-style dashboard of
- * blocks while keeping the Giftly "Midnight & Camel" palette (uploads/DESIGN.md
+ * blocks while keeping the Giftopia "Midnight & Camel" palette (uploads/DESIGN.md
  * §9). Flow: announcement strip → bento block grid (hero + quick-entry tiles) →
  * category block rail → products grid. The products grid lists every published
  * product so the full catalogue is visible on the dashboard; category tiles

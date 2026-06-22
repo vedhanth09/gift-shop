@@ -32,7 +32,7 @@ export default function AdminNav() {
           G
         </span>
         <span className="font-display text-lg font-semibold text-sand">
-          Giftly <span className="text-camel">Admin</span>
+          Giftopia <span className="text-camel">Admin</span>
         </span>
       </Link>
 

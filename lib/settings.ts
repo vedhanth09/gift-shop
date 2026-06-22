@@ -19,7 +19,7 @@ export interface StoreSettings {
 }
 
 export const DEFAULT_SETTINGS: StoreSettings = {
-  storeName: "Giftly",
+  storeName: "Giftopia",
   logoUrl: "",
   contactEmail: "",
   currency: "INR",

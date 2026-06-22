@@ -12,7 +12,7 @@ import WishlistView from "@/components/store/WishlistView";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "My wishlist · Giftly",
+  title: "My wishlist · Giftopia",
 };
 
 export default async function WishlistPage() {

@@ -9,7 +9,7 @@ import { formatINR } from "@/lib/utils";
  */
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const EMAIL_FROM = process.env.EMAIL_FROM || "Giftly <onboarding@resend.dev>";
+const EMAIL_FROM = process.env.EMAIL_FROM || "Giftopia <onboarding@resend.dev>";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 export function isEmailConfigured(): boolean {
@@ -129,7 +129,7 @@ export async function sendOrderConfirmationEmail(args: {
 
   return sendEmail({
     to,
-    subject: `Giftly order ${order.orderNumber} confirmed`,
+    subject: `Giftopia order ${order.orderNumber} confirmed`,
     html,
   });
 }
@@ -167,13 +167,13 @@ export async function sendVerificationEmail(args: {
   const url = `${APP_URL}/account/verify-email?token=${encodeURIComponent(args.token)}`;
   return sendEmail({
     to: args.to,
-    subject: "Verify your Giftly email",
+    subject: "Verify your Giftopia email",
     html: actionEmail({
-      heading: `Welcome to Giftly${args.name ? `, ${escapeHtml(args.name)}` : ""}!`,
+      heading: `Welcome to Giftopia${args.name ? `, ${escapeHtml(args.name)}` : ""}!`,
       body: "Please confirm your email address to activate your account and start ordering.",
       buttonLabel: "Verify my email",
       url,
-      footer: "This link expires in 24 hours. If you didn't create a Giftly account, you can ignore this email.",
+      footer: "This link expires in 24 hours. If you didn't create a Giftopia account, you can ignore this email.",
     }),
   });
 }
@@ -187,10 +187,10 @@ export async function sendPasswordResetEmail(args: {
   const url = `${APP_URL}/account/reset-password?token=${encodeURIComponent(args.token)}`;
   return sendEmail({
     to: args.to,
-    subject: "Reset your Giftly password",
+    subject: "Reset your Giftopia password",
     html: actionEmail({
       heading: "Reset your password",
-      body: `Hi${args.name ? ` ${escapeHtml(args.name)}` : ""}, we received a request to reset your Giftly password. Click below to choose a new one.`,
+      body: `Hi${args.name ? ` ${escapeHtml(args.name)}` : ""}, we received a request to reset your Giftopia password. Click below to choose a new one.`,
       buttonLabel: "Reset password",
       url,
       footer: "This link expires in 1 hour. If you didn't request a reset, your password is unchanged and you can ignore this email.",

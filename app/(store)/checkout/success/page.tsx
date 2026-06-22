@@ -9,7 +9,7 @@ import { formatINR } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Order confirmed · Giftly",
+  title: "Order confirmed · Giftopia",
 };
 
 const PAYMENT_LABELS: Record<string, string> = {

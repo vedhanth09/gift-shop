@@ -22,7 +22,7 @@ export interface ISettings extends Document {
 
 const SettingsSchema = new Schema<ISettings>({
   key: { type: String, required: true, unique: true, default: "store" },
-  storeName: { type: String, default: "Giftly", trim: true },
+  storeName: { type: String, default: "Giftopia", trim: true },
   logoUrl: { type: String, default: "" },
   contactEmail: { type: String, default: "", trim: true },
   currency: { type: String, default: "INR", trim: true },

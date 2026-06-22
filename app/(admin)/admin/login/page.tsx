@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-sand px-4">
       <div className="w-full max-w-sm rounded-xl border border-line-subtle bg-surface p-8 shadow-sm">
-        <h1 className="mb-1 font-display text-2xl font-semibold text-ink">Giftly Admin</h1>
+        <h1 className="mb-1 font-display text-2xl font-semibold text-ink">Giftopia Admin</h1>
         <p className="mb-6 text-sm text-taupe">Owner sign-in</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import LiveSearch from "@/components/store/LiveSearch";
 
 export const metadata: Metadata = {
-  title: "Search · Giftly",
-  description: "Search Giftly for the perfect gift.",
+  title: "Search · Giftopia",
+  description: "Search Giftopia for the perfect gift.",
 };
 
 /** Live search page. The initial query comes from ?q= (e.g. the header search). */

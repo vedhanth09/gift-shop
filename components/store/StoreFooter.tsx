@@ -8,7 +8,7 @@ interface FooterProps {
 
 /** Storefront footer with nav, configurable contact/social links and copyright. */
 export default function StoreFooter({
-  storeName = "Giftly",
+  storeName = "Giftopia",
   contactEmail = "",
   social = {},
 }: FooterProps) {
